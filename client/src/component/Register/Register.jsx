@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { postData } from '../../redux/action';
 
 const Register = () => {
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state);
+  console.log('state:', state);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     address: '',
     age: '',
-    work: '', 
+    work: '',
     description: '',
   });
 
@@ -20,7 +26,12 @@ const Register = () => {
       [name]: value,
     }));
   };
-  console.log('in', formData);
+
+  const formSubmit = (e) => {
+    e.preventDefault();
+    dispatch(postData(formData));
+  };
+  console.log(formSubmit, 'submitted');
 
   return (
     <div className='row px-4'>
@@ -35,7 +46,7 @@ const Register = () => {
                 Name
               </label>
               <input
-                type='email'
+                type='text'
                 className='form-control'
                 id='exampleInputEmail1'
                 aria-describedby='emailHelp'
@@ -50,7 +61,7 @@ const Register = () => {
                 Email
               </label>
               <input
-                type='password'
+                type='text'
                 className='form-control'
                 id='exampleInputPassword1'
                 name='email'
@@ -63,7 +74,7 @@ const Register = () => {
                 Age
               </label>
               <input
-                type='password'
+                type='text'
                 className='form-control'
                 id='exampleInputPassword1'
                 name='age'
@@ -76,7 +87,7 @@ const Register = () => {
                 Mobile
               </label>
               <input
-                type='password'
+                type='text'
                 className='form-control'
                 id='exampleInputPassword1'
                 name='phone'
@@ -89,7 +100,7 @@ const Register = () => {
                 Work
               </label>
               <input
-                type='password'
+                type='text'
                 className='form-control'
                 id='exampleInputPassword1'
                 name='work'
@@ -102,7 +113,7 @@ const Register = () => {
                 Address
               </label>
               <input
-                type='password'
+                type='text'
                 className='form-control'
                 id='exampleInputPassword1'
                 name='address'
@@ -115,14 +126,17 @@ const Register = () => {
                 description
               </label>
               <textarea
-                class='form-control'
+                className='form-control'
                 id='exampleFormControlTextarea1'
                 rows='3'
                 name='description'
                 value={formData.description}
                 onChange={InputValueChange}></textarea>
             </div>
-            <button type='submit' className='btn btn-primary'>
+            <button
+              type='submit'
+              className='btn btn-primary'
+              onClick={formSubmit}>
               Submit
             </button>
           </div>

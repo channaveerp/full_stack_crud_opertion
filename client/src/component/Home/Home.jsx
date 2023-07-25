@@ -17,6 +17,8 @@ const Home = () => {
       dispatch(getData(state));
     }, 200);
   }, []);
+  
+  
   return (
     <div className='mt-5'>
       <div className='container'>
