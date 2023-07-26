@@ -42,10 +42,7 @@ const Register = () => {
 
     try {
       const res = await dispatch(postData(formData));
-      console.log('res:', res);
-      if (res.payload.email === formData.email) {
-        alert('user already exists');
-      }
+      console.log('res:', res.payload._id);
     } catch (err) {
       console.log('err:', err);
     }
