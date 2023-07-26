@@ -27,9 +27,28 @@ const Register = () => {
     }));
   };
 
-  const formSubmit = (e) => {
+  const formSubmit = async (e) => {
     e.preventDefault();
-    dispatch(postData(formData));
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.work ||
+      !formData.phone ||
+      !formData.address ||
+      !formData.age
+    ) {
+      alert('Please fill data');
+    }
+
+    try {
+      const res = await dispatch(postData(formData));
+      console.log('res:', res);
+      if (res.payload.email === formData.email) {
+        alert('user already exists');
+      }
+    } catch (err) {
+      console.log('err:', err);
+    }
   };
   console.log(formSubmit, 'submitted');
 
