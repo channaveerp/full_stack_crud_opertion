@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom';
 import { postData } from '../../redux/action';
 
 const Register = () => {
+  const [successAlert, setSuccessAlert] = useState(false);
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
-  console.log('state:', state);
+  // console.log('state:', state);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -41,16 +42,21 @@ const Register = () => {
     }
 
     try {
-      const res = await dispatch(postData(formData));
-      console.log('res:', res.payload._id);
+      await dispatch(postData(formData));
+      debugger;
+      setSuccessAlert(true);
     } catch (err) {
       console.log('err:', err);
     }
   };
-  console.log(formSubmit, 'submitted');
 
   return (
     <div className='row px-4'>
+      {successAlert && (
+        <div class='alert alert-success' role='alert'>
+          This is a success alert—check it out!
+        </div>
+      )}
       <div>
         <Link to='/'>Home</Link>
       </div>
