@@ -4,6 +4,7 @@ const initState = {
   loading: false,
   error: false,
   data: [],
+  usersData: {},
 };
 
 const Reducer = (state = initState, action) => {
@@ -15,7 +16,15 @@ const Reducer = (state = initState, action) => {
       return { ...state, error: true };
 
     case types.GET_DATA_SUCCESS:
-      return { ...state, error: false, loading: false, data: action.payload };
+      return {
+        ...state,
+        error: false,
+        loading: false,
+        usersData: action.payload,
+      };
+
+    case types.POST_DATA_SUCCESS:
+      return { ...state, data: action.payload };
     default:
       return state;
   }

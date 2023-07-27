@@ -21,7 +21,7 @@ const getData = (payload) => (dispatch) => {
   dispatch({ type: types.GET_DATA_REQUEST });
 
   return axios
-    .get('https://fakestoreapi.com/products', payload)
+    .get('http://localhost:5000/getusers', payload)
     .then((res) =>
       dispatch({ type: types.GET_DATA_SUCCESS, payload: res.data })
     )

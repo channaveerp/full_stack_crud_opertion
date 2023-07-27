@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { postData } from '../../redux/action';
+import { Alert } from 'bootstrap';
+import Loading from '../Loading';
 
 const Register = () => {
   const [successAlert, setSuccessAlert] = useState(false);
+  const [show, setShow] = useState(true);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
   // console.log('state:', state);
@@ -27,9 +31,13 @@ const Register = () => {
       [name]: value,
     }));
   };
+  const handleClose = () => {
+    setShow(false);
+  };
 
   const formSubmit = async (e) => {
     e.preventDefault();
+    setLoading(false);
     if (
       !formData.name ||
       !formData.email ||
@@ -39,24 +47,40 @@ const Register = () => {
       !formData.age
     ) {
       alert('Please fill data');
+      return;
     }
-
+    setLoading(true);
     try {
-      await dispatch(postData(formData));
-      debugger;
-      setSuccessAlert(true);
+      const res = await dispatch(postData(formData));
+      console.log('res:', res);
+
+      if (res.status === 201) {
+        setLoading(false);
+        alert('user successfully registered');
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          address: '',
+          age: '',
+          work: '',
+          description: '',
+        });
+      } else {
+        alert('error in registration');
+        setLoading(false);
+        return;
+      }
     } catch (err) {
       console.log('err:', err);
+      alert('Error registering');
+      setSuccessAlert(false);
+      setLoading(false);
     }
   };
 
   return (
     <div className='row px-4'>
-      {successAlert && (
-        <div class='alert alert-success' role='alert'>
-          This is a success alert—check it out!
-        </div>
-      )}
       <div>
         <Link to='/'>Home</Link>
       </div>
@@ -159,7 +183,7 @@ const Register = () => {
               type='submit'
               className='btn btn-primary'
               onClick={formSubmit}>
-              Submit
+              {loading ? <Loading /> : 'Submit'}
             </button>
           </div>
         </form>

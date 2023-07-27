@@ -1,24 +1,22 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getData } from '../../redux/action';
 import Navbar from '../Navbar/Navbar';
 import { Link } from 'react-router-dom';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { getData } from '../../redux/action';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const state = useSelector((state) => state);
-  console.log('state:', state);
+
+  const { usersData } = useSelector((state) => state.Reducer);
+  console.log('state:', usersData);
 
   useEffect(() => {
-    setTimeout(() => {
-      dispatch(getData(state));
-    }, 200);
+    dispatch(getData(usersData));
   }, []);
-  
-  
+
   return (
     <div className='mt-5'>
       <div className='container'>
@@ -40,29 +38,32 @@ const Home = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope='row'>1</th>
-              <td>1</td>
-              <td>sham</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td className='d-flex justify-content-between g-2'>
-                <Link to='/view/:1'>
-                  <button className='btn btn-success'>
-                    <RemoveRedEyeIcon />;
-                  </button>
-                </Link>
+            {usersData?.data &&
+              usersData?.data?.map((item) => (
+                <tr>
+                  <th scope='row'>...{item._id.slice(-8)}</th>
+                  <td>{item.name}</td>
+                  <td>{item.email}</td>
+                  <td>{item.work}</td>
+                  <td>{item.phone}</td>
+                  <td className='d-flex justify-content-between g-2'>
+                    <Link to='/view/:1'>
+                      <button className='btn btn-success'>
+                        <RemoveRedEyeIcon />
+                      </button>
+                    </Link>
 
-                <Link to='/edit/1'>
-                  <button className='btn btn-primary'>
-                    <CreateIcon />
-                  </button>
-                </Link>
-                <button className='btn btn-danger'>
-                  <DeleteOutlineIcon />
-                </button>
-              </td>
-            </tr>
+                    <Link to='/edit/1'>
+                      <button className='btn btn-primary'>
+                        <CreateIcon />
+                      </button>
+                    </Link>
+                    <button className='btn btn-danger'>
+                      <DeleteOutlineIcon />
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
