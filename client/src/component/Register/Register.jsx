@@ -54,8 +54,7 @@ const Register = () => {
       const res = await dispatch(postData(formData));
       console.log('res:', res);
 
-      if (res.status === 201) {
-        setLoading(false);
+      if (res.payload) {
         alert('user successfully registered');
         setFormData({
           name: '',
@@ -66,9 +65,12 @@ const Register = () => {
           work: '',
           description: '',
         });
-      } else {
-        alert('error in registration');
         setLoading(false);
+        return;
+      } else {
+        alert('something went wrong please check your form data');
+        setLoading(false);
+
         return;
       }
     } catch (err) {

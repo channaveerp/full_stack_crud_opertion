@@ -29,7 +29,35 @@ const getData = (payload) => (dispatch) => {
       dispatch({ type: types.GET_DATA_FAILURE, payload: err.data })
     );
 };
+// delete user
 
-// fetchingData
+const deleteUser =
+  (id) =>
+  ({ payload, dispatch }) => {
+    return axios
+      .delete(`http://localhost:5000/delete/${id}`, payload)
+      .then((res) => dispatch({ type: types.DELETE_DATA, payload: res.data }))
+      .catch((err) => console.log(err));
+  };
 
-export { getData, postData };
+// editUser action creator
+const editUser = (id, formData) => async (dispatch) => {
+  try {
+    const response = await axios.put(
+      `http://localhost:5000/edit/${id}`,
+      formData
+    );
+
+    dispatch({
+      type: types.EDIT_USER_DATA,
+      payload: response.data, // Assuming the response data contains the updated user data
+    });
+
+    return response.data; // Return the updated user data
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export { getData, postData, deleteUser, editUser };

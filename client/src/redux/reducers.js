@@ -5,6 +5,8 @@ const initState = {
   error: false,
   data: [],
   usersData: {},
+  delteUsersData: {},
+  editUsersData: {},
 };
 
 const Reducer = (state = initState, action) => {
@@ -25,6 +27,11 @@ const Reducer = (state = initState, action) => {
 
     case types.POST_DATA_SUCCESS:
       return { ...state, data: action.payload };
+
+    case types.DELETE_DATA:
+      return { ...state, delteUsersData: action.payload };
+    case types.EDIT_USER_DATA:
+      return { ...state, editUsersData: action.payload };
     default:
       return state;
   }

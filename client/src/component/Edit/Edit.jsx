@@ -1,7 +1,19 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
+import Loading from '../Loading';
+import { editUser } from '../../redux/action';
 
 const Edit = () => {
+  const { usersData } = useSelector((state) => state.Reducer);
+  const [loading, setLoading] = useState(false);
+  const [successAlert, setSuccessAlert] = useState(false);
+
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const [editUsers, setUsers] = useState(null);
+  console.log('editUsers:', editUsers?.name);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,7 +23,6 @@ const Edit = () => {
     work: '',
     description: '',
   });
-
   const InputValueChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -22,10 +33,72 @@ const Edit = () => {
   };
   console.log('in', formData);
 
+  useEffect(() => {
+    const EditData = usersData?.data?.find((user) => user._id === id);
+    if (EditData) {
+      setUsers(EditData);
+      setFormData({
+        name: EditData?.name,
+        email: EditData?.email,
+        phone: EditData?.phone,
+        address: EditData?.address,
+        age: EditData?.age,
+        work: EditData?.work,
+        description: EditData?.description,
+      });
+    }
+  }, [id, editUsers]);
+
+  const formSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(false);
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.work ||
+      !formData.phone ||
+      !formData.address ||
+      !formData.age
+    ) {
+      alert('Please fill data');
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await dispatch(editUser({ id, formData }));
+      console.log('res:', res);
+
+      if (res.payload) {
+        alert('user successfully registered');
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          address: '',
+          age: '',
+          work: '',
+          description: '',
+        });
+        setLoading(false);
+        return;
+      } else {
+        alert('something went wrong please check your form data');
+        setLoading(false);
+
+        return;
+      }
+    } catch (err) {
+      console.log('err:', err);
+      alert('Error registering');
+      setSuccessAlert(false);
+      setLoading(false);
+    }
+  };
+
   return (
     <div className='row px-4'>
       <div>
-        <Link to='/'>Home2</Link>
+        <Link to='/'>Home</Link>
       </div>
       <div>
         <form>
@@ -35,7 +108,7 @@ const Edit = () => {
                 Name
               </label>
               <input
-                type='email'
+                type='text'
                 className='form-control'
                 id='exampleInputEmail1'
                 aria-describedby='emailHelp'
@@ -50,7 +123,7 @@ const Edit = () => {
                 Email
               </label>
               <input
-                type='password'
+                type='text'
                 className='form-control'
                 id='exampleInputPassword1'
                 name='email'
@@ -63,7 +136,7 @@ const Edit = () => {
                 Age
               </label>
               <input
-                type='password'
+                type='text'
                 className='form-control'
                 id='exampleInputPassword1'
                 name='age'
@@ -76,7 +149,7 @@ const Edit = () => {
                 Mobile
               </label>
               <input
-                type='password'
+                type='text'
                 className='form-control'
                 id='exampleInputPassword1'
                 name='phone'
@@ -89,7 +162,7 @@ const Edit = () => {
                 Work
               </label>
               <input
-                type='password'
+                type='text'
                 className='form-control'
                 id='exampleInputPassword1'
                 name='work'
@@ -102,7 +175,7 @@ const Edit = () => {
                 Address
               </label>
               <input
-                type='password'
+                type='text'
                 className='form-control'
                 id='exampleInputPassword1'
                 name='address'
@@ -115,15 +188,18 @@ const Edit = () => {
                 description
               </label>
               <textarea
-                class='form-control'
+                className='form-control'
                 id='exampleFormControlTextarea1'
                 rows='3'
                 name='description'
                 value={formData.description}
                 onChange={InputValueChange}></textarea>
             </div>
-            <button type='submit' className='btn btn-primary'>
-              Submit
+            <button
+              type='submit'
+              className='btn btn-primary'
+              onClick={formSubmit}>
+              {loading ? <Loading /> : 'Submit'}
             </button>
           </div>
         </form>

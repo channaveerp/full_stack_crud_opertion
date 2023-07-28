@@ -1,21 +1,40 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Navbar from '../Navbar/Navbar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { getData } from '../../redux/action';
+import { deleteUser, getData } from '../../redux/action';
 
 const Home = () => {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const { usersData } = useSelector((state) => state.Reducer);
-  console.log('state:', usersData);
+  const { delteUsersData } = useSelector((state) => state.Reducer);
+  console.log('delteUsersData:', delteUsersData);
 
   useEffect(() => {
     dispatch(getData(usersData));
   }, []);
+
+  // useEffect(() => {
+  //   dispatch(deleteUser(delteUsersData));
+  // }, [delteUsersData]);
+
+  const ViewUserDetailsHanlde = (id) => {
+    navigate(`/view/${id}`);
+  };
+  const DeleteUserData = (id) => {
+    if (id && window.confirm('Are you sure you want to delete data?')) {
+      dispatch(deleteUser(id));
+      dispatch(getData(usersData));
+    }
+  };
+
+  const UpdateUserData = (id) => {
+    navigate(`/edit/${id}`);
+  };
 
   return (
     <div className='mt-5'>
@@ -47,18 +66,25 @@ const Home = () => {
                   <td>{item.work}</td>
                   <td>{item.phone}</td>
                   <td className='d-flex justify-content-between g-2'>
-                    <Link to='/view/:1'>
-                      <button className='btn btn-success'>
-                        <RemoveRedEyeIcon />
-                      </button>
-                    </Link>
+                    {/* <Link to='/view/:1'>
+                        <button className='btn btn-success'>
+                          <RemoveRedEyeIcon />
+                        </button>
+                      </Link> */}
+                    <button
+                      className='btn btn-success'
+                      onClick={() => ViewUserDetailsHanlde(item._id)}>
+                      <RemoveRedEyeIcon />
+                    </button>
 
-                    <Link to='/edit/1'>
-                      <button className='btn btn-primary'>
-                        <CreateIcon />
-                      </button>
-                    </Link>
-                    <button className='btn btn-danger'>
+                    <button
+                      className='btn btn-primary'
+                      onClick={() => UpdateUserData(item._id)}>
+                      <CreateIcon />
+                    </button>
+                    <button
+                      className='btn btn-danger'
+                      onClick={() => DeleteUserData(item._id)}>
                       <DeleteOutlineIcon />
                     </button>
                   </td>
