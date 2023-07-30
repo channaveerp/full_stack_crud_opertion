@@ -31,12 +31,12 @@ const Details = () => {
     <div className='m-4'>
       <h3>Welcome {singleUserData?.name}</h3>
       <Card sx={{ maxWidth: 700 }}>
-        <div
+        {/* <div
           style={{
             textAlign: 'right',
             display: 'flex',
             gap: '10px',
-            justifyContent: 'flex-end',
+            justifyContent: 'flex-end', 
           }}>
           <button className='btn btn-primary'>
             <CreateIcon />
@@ -44,7 +44,7 @@ const Details = () => {
           <button className='btn btn-danger'>
             <DeleteOutlineIcon />
           </button>
-        </div>
+        </div> */}
         <CardContent>
           <div className='row'>
             <div className='leftCont col-lg-6 col-md-6 col-12 p-3'>

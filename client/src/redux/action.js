@@ -40,19 +40,15 @@ const deleteUser =
       .catch((err) => console.log(err));
   };
 
-// editUser action creator
+// editusers data
+
 const editUser = (id, formData) => async (dispatch) => {
   try {
-    const response = await axios.put(
+    const response = await axios.patch(
       `http://localhost:5000/edit/${id}`,
       formData
     );
-
-    dispatch({
-      type: types.EDIT_USER_DATA,
-      payload: response.data, // Assuming the response data contains the updated user data
-    });
-
+    dispatch({ type: types.EDIT_USER_DATA, payload: response.data });
     return response.data; // Return the updated user data
   } catch (error) {
     console.log(error);

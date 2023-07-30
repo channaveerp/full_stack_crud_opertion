@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Loading from '../Loading';
 import { editUser } from '../../redux/action';
 
@@ -13,6 +13,8 @@ const Edit = () => {
   const { id } = useParams();
   const [editUsers, setUsers] = useState(null);
   console.log('editUsers:', editUsers?.name);
+
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -34,18 +36,12 @@ const Edit = () => {
   console.log('in', formData);
 
   useEffect(() => {
-    const EditData = usersData?.data?.find((user) => user._id === id);
+    const EditData = usersData?.data?.find((user) => user?._id === id);
+    console.log('EditData:', EditData);
+
     if (EditData) {
       setUsers(EditData);
-      setFormData({
-        name: EditData?.name,
-        email: EditData?.email,
-        phone: EditData?.phone,
-        address: EditData?.address,
-        age: EditData?.age,
-        work: EditData?.work,
-        description: EditData?.description,
-      });
+      setFormData(EditData);
     }
   }, [id, editUsers]);
 
@@ -64,34 +60,56 @@ const Edit = () => {
       return;
     }
     setLoading(true);
-    try {
-      const res = await dispatch(editUser({ id, formData }));
-      console.log('res:', res);
+    // try {
+    //   const res = await dispatch(editUser({ id, formData }));
+    //   console.log('res:', res);
+    //   if (res.payload) {
+    //     alert('user successfully registered');
+    //     setFormData({
+    //       name: '',
+    //       email: '',
+    //       phone: '',
+    //       address: '',
+    //       age: '',
+    //       work: '',
+    //       description: '',
+    //     });
+    //     setLoading(false);
+    //     return;
+    //   } else {
+    //     alert('something went wrong please check your form data');
+    //     setLoading(false);
 
-      if (res.payload) {
-        alert('user successfully registered');
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          address: '',
-          age: '',
-          work: '',
-          description: '',
-        });
-        setLoading(false);
-        return;
-      } else {
-        alert('something went wrong please check your form data');
-        setLoading(false);
-
-        return;
-      }
-    } catch (err) {
-      console.log('err:', err);
-      alert('Error registering');
-      setSuccessAlert(false);
+    //     return;
+    //   }
+    // } catch (err) {
+    //   console.log('err:', err);
+    //   alert('server error:', err);
+    //   setSuccessAlert(false);
+    //   setLoading(false);
+    // }
+    const { name, email, phone, address, work, description, age } = formData;
+    const res = await fetch(`http://localhost:5000/edit/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        email,
+        phone,
+        address,
+        work,
+        description,
+        age,
+      }),
+    });
+    const data2 = res.json();
+    console.log(data2);
+    if (res.staus === 400 || !data2) {
+      alert('Error');
+    } else {
+      alert('users data updated successfully');
       setLoading(false);
+      navigate('/');
     }
   };
 
