@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { postData } from '../../redux/action';
 import { Alert } from 'bootstrap';
 import Loading from '../Loading';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [successAlert, setSuccessAlert] = useState(false);
   const [show, setShow] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -56,6 +57,7 @@ const Register = () => {
 
       if (res.payload) {
         alert('user successfully registered');
+        navigate('/');
         setFormData({
           name: '',
           email: '',
